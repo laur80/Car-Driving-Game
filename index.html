@@ -9,8 +9,8 @@
     <div class="cron"></div>
     <div class="game">
       <div class="startScreen">
-        Press here to START<br />Arrow keys to move<br />If u hit another car
-        the game will STOP
+        Press here to START<br />ARROW keys to move<br />If u hit another car
+        the game will STOP<br />To replay press Enter, Space or Click here
       </div>
       <div class="gameArea"></div>
     </div>
@@ -86,7 +86,7 @@
         overflow: hidden;
         position: relative;
         margin: auto;
-/*         background-image: url(road.jpg); */
+        /* background-image: url(road.jpg); */
         color: aliceblue;
       }
     </style>
@@ -105,17 +105,26 @@
       };
       let player = { speed: 5, score: 0 };
 
-      document.addEventListener('keydown', pressOn);
+      document.addEventListener('keydown', (e) => {
+        e.preventDefault();
+        let key = e.keyCode;
+        // console.log(key);
+        if (key === 13) {
+          start();
+        }
+        if (key === 32) {
+          start();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        e.preventDefault();
+        return (keys[e.key] = true);
+      });
 
       document.addEventListener('keyup', pressOff);
 
       startScreen.addEventListener('click', start);
-
-      function pressOn(e) {
-        e.preventDefault();
-        keys[e.key] = true;
-        // console.log(keys);
-      }
 
       function pressOff(e) {
         e.preventDefault();
@@ -123,15 +132,15 @@
         // console.log(keys);
       }
 
-      function endGame() {
+      const endGame = () => {
         player.start = false;
         cron.innerHTML = 'Game over<br>Score was: ' + player.score;
         startScreen.classList.remove('hide');
-      }
+      };
 
-      function randomColor() {
+      const randomColor = () => {
         return '#' + Math.random().toString(16).substr(-6);
-      }
+      };
 
       function start() {
         startScreen.classList.add('hide');
@@ -148,7 +157,6 @@
         }
         window.requestAnimationFrame(playGame);
         let car = document.createElement('div');
-
         gameArea.appendChild(car);
         car.setAttribute('class', 'car');
         player.x = car.offsetLeft;
@@ -165,7 +173,7 @@
         }
       }
 
-      function moveLines() {
+      const moveLines = () => {
         let lines = document.querySelectorAll('.line');
         lines.forEach(function (item) {
           // console.log(item.y);
@@ -176,9 +184,9 @@
 
           item.style.top = item.y + 'px';
         });
-      }
+      };
 
-      function moveEnemy(car) {
+      const moveEnemy = (car) => {
         let ele = document.querySelectorAll('.enemy');
         ele.forEach(function (item) {
           if (isCollide(car, item)) {
@@ -193,9 +201,9 @@
 
           item.style.top = item.y + 'px';
         });
-      }
+      };
 
-      function isCollide(a, b) {
+      const isCollide = (a, b) => {
         let aRect = a.getBoundingClientRect();
         let bRect = b.getBoundingClientRect();
 
@@ -205,12 +213,13 @@
           aRect.left > bRect.right ||
           aRect.right < bRect.left
         );
-      }
+      };
 
-      function playGame() {
+      const playGame = () => {
         let car = document.querySelector('.car');
         let road = gameArea.getBoundingClientRect();
         // console.log(road);
+        // game.stlyle.backroundImage = forest.jpg;
         moveLines();
         moveEnemy(car);
         if (player.start) {
@@ -230,10 +239,9 @@
           car.style.top = player.y + 'px';
           window.requestAnimationFrame(playGame);
           player.score++;
-          
           cron.innerHTML = 'Score: ' + player.score;
         }
-      }
+      };
     </script>
   </body>
 </html>
