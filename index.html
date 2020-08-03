@@ -7,6 +7,7 @@
   </head>
   <body>
     <div class="cron"></div>
+
     <div class="game">
       <div class="startScreen">
         Press here to START<br />ARROW keys to move<br />If u hit another car
@@ -21,12 +22,29 @@
       html,
       body {
         height: 100%;
+        margin: 0px;
       }
 
-      body {
-        background-color: rgb(35, 142, 35);
+      .game {
+        /* background-color: rgb(35, 142, 35); */
+        width: 100%;
+        height: 1920px;
+        margin: 0px auto;
+        overflow: hidden;
         background-image: url(forest.jpg);
-        background-size: cover;
+      }
+
+      .animation {
+        animation: slideshow linear 15s infinite;
+      }
+
+      @keyframes slideshow {
+        from {
+          background-position: 0px 0px;
+        }
+        to {
+          background-position: 0px 1920px;
+        }
       }
 
       .startScreen {
@@ -49,7 +67,6 @@
         position: absolute;
         bottom: 100px;
         margin: auto;
-        /* left: 900px; */
         width: 50px;
         height: 100px;
         background-color: red;
@@ -65,7 +82,6 @@
         height: 100px;
         width: 10px;
         margin-left: 95px;
-
         background-color: white;
       }
 
@@ -122,29 +138,28 @@
         return (keys[e.key] = true);
       });
 
-      document.addEventListener('keyup', pressOff);
-
-      startScreen.addEventListener('click', start);
-
-      function pressOff(e) {
+      const pressOff = (e) => {
         e.preventDefault();
         keys[e.key] = false;
         // console.log(keys);
-      }
+      };
+
+      document.addEventListener('keyup', pressOff);
 
       const endGame = () => {
         player.start = false;
         cron.innerHTML = 'Game over<br>Score was: ' + player.score;
         startScreen.classList.remove('hide');
+        game.classList.remove('animation');
       };
 
       const randomColor = () => {
         return '#' + Math.random().toString(16).substr(-6);
       };
 
-      function start() {
+      const start = () => {
         startScreen.classList.add('hide');
-        // gameArea.classList.remove('hide');
+        game.classList.add('animation');
         gameArea.innerHTML = '';
         player.start = true;
         player.score = 0;
@@ -171,7 +186,9 @@
           enemy.style.left = Math.floor(Math.random() * 150) + 'px';
           gameArea.appendChild(enemy);
         }
-      }
+      };
+
+      startScreen.addEventListener('click', start);
 
       const moveLines = () => {
         let lines = document.querySelectorAll('.line');
@@ -216,10 +233,10 @@
       };
 
       const playGame = () => {
+        let image = document.querySelector('.game');
         let car = document.querySelector('.car');
         let road = gameArea.getBoundingClientRect();
-        // console.log(road);
-        // game.stlyle.backroundImage = forest.jpg;
+
         moveLines();
         moveEnemy(car);
         if (player.start) {
@@ -237,6 +254,7 @@
           }
           car.style.left = player.x + 'px';
           car.style.top = player.y + 'px';
+
           window.requestAnimationFrame(playGame);
           player.score++;
           cron.innerHTML = 'Score: ' + player.score;
